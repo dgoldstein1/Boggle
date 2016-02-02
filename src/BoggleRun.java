@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class BoggleRun {
     public static void main(String[] args) {
-        new Game(Language.LATIN,4);
+        new Game(Language.ENGLISH,4);
         //new WelcomeFrame();
     }
 }
