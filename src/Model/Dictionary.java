@@ -14,10 +14,11 @@ public class Dictionary {
 
     public Dictionary(Language lang){
         this.lang = lang;
-        dic = new HashSet<String>(500000);
+        dic = new HashSet<>(500000);
         gen = new Alphabet(lang);
+        
 
-        String filename = "/Dictionaries/" + lang.toString() + "_Dictionary.txt";
+        String filename = "/lib/Dictionaries/" + lang.toString() + "_Dictionary.txt"; 
         try{
             InputStream is = getClass().getResourceAsStream(filename);
             BufferedReader br = new BufferedReader((new InputStreamReader(is,"UTF-8")));
@@ -31,6 +32,7 @@ public class Dictionary {
         } catch(NullPointerException e){
             System.out.println("could not find file: " + filename);
             e.printStackTrace();
+            System.exit(1);
         } catch(UnsupportedEncodingException e){
             System.out.println("could not encode " + filename);
             e.printStackTrace();
