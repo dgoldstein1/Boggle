@@ -12,7 +12,7 @@ public class BoggleControlPanel extends JPanel{
 
     public BoggleControlPanel(MouseListener listener){
         setLayout(new GridLayout(2,1));
-        setPreferredSize(new Dimension(150,240));
+        //setPreferredSize(new Dimension(150,240));
         setBorder(BorderFactory.createLineBorder(Color.black));
 
         enter = new BoggleButton("enter",listener);

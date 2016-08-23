@@ -13,11 +13,13 @@ public class Dictionary {
     private Alphabet gen;
 
     public Dictionary(Language lang){
-        this.lang = lang;
         dic = new HashSet<>(500000);
+        setLang(lang);        
+    }
+    
+    public void setLang(Language lang){
+        this.lang = lang;
         gen = new Alphabet(lang);
-        
-
         String filename = "/lib/Dictionaries/" + lang.toString() + "_Dictionary.txt"; 
         try{
             InputStream is = getClass().getResourceAsStream(filename);
@@ -52,5 +54,9 @@ public class Dictionary {
      */
     public String getRandomLetter(){
         return gen.getRandomLetter();
+    }
+    
+    public Language lang(){
+        return lang;
     }
 }

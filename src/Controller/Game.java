@@ -2,12 +2,8 @@ package Controller;
 
 import Model.Language;
 import Model.Puzzle;
-import View.BoggleButton;
 import View.BoggleFrame;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Dave on 03/06/2015.
@@ -17,7 +13,7 @@ public class Game {
     private BoggleFrame frame;
     private GameNotifier gameNotifier;
 
-    public Game(Language lang, int rows){
+    public Game (Language lang, int rows){
         gameNotifier = new GameNotifier(this);
         p = new Puzzle(lang,rows,gameNotifier);
         frame = new BoggleFrame(rows,p.getPuzzle(),gameNotifier);
@@ -31,7 +27,7 @@ public class Game {
         p.enterPushed();
     }
     public void clearPushed(){
-        p.resetBoard();
+        p.resetMove();
         this.clearBoard();
     }
     //in from puzzle
@@ -41,11 +37,26 @@ public class Game {
     public void clearBoard(){
         frame.clearBoard();
     }
-    public void correctWord(String s){
-        frame.correctWord(s);
+    public void correctWord(String s, int newPoints){
+        frame.correctWord(s,newPoints);
     }
     public void incorrectWord(){
         frame.incorrectWord();
+    }
+    
+    public Language getLang(){
+        return p.getLang();
+    }
+    
+    public void setLang(Language l){
+        p.setLang(l);
+        newPuzzle();
+    }
+    public void newPuzzle(){
+        p.newPuzzle();
+        p.printPuzzle();
+        frame.resetBoard(p.getPuzzle());
+        
     }
 
 }

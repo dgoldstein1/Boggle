@@ -5,7 +5,7 @@ package Controller;
  */
 public interface PuzzleObserver {
     void squarePushed(int id, String s);
-    void correctWord(String s);
+    void correctWord(String s,int newPoints);
     void incorrectWord();
     void clear();
 }

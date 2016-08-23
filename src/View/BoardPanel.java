@@ -1,6 +1,5 @@
 package View;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,12 +10,14 @@ import java.awt.event.MouseListener;
  * Created by Dave on 02/06/2015.
  */
 public class BoardPanel extends JPanel {
+
     private BoggleButton[] squares;
     private MainSound sounds;
     int rows;
     private boolean highlightOn;
     private Color currHighLightColor;
     private int highlightTimes;
+    private MouseListener listener;
     Timer t;
 
     public BoardPanel(String[] ids, MainSound sounds, int rows, final MouseListener listener) {
@@ -26,16 +27,29 @@ public class BoardPanel extends JPanel {
 
         this.sounds = sounds;
         this.rows = rows;
-        highlightOn=false;
-        currHighLightColor=null;
-        highlightTimes=0;
+        highlightOn = false;
+        currHighLightColor = null;
+        highlightTimes = 0;
+        this.listener = listener;
         squares = new BoggleButton[rows * rows];
         for (int i = 0; i < rows * rows; i++) {
             squares[i] = new BoggleButton(i, ids[i], listener);
             this.add(squares[i]);
         }
-        initHighlightTimer(10,25);
+        resetBoard(ids);        
+        initHighlightTimer(10, 25);
 
+    }
+
+    /**
+     * displays new ids
+     * @param ids
+     */
+    public void resetBoard(String[] ids) {
+        clear();        
+        for (int i = 0; i < rows * rows; i++) {
+            squares[i].setText(ids[i]);                       
+        }
     }
 
     public void selectSquare(int id) {
@@ -43,45 +57,43 @@ public class BoardPanel extends JPanel {
     }
 
     public void clear() {
-        currHighLightColor=null;
-        highlightOn=false;
-        highlightTimes=0;
-        for (BoggleButton b : squares)
+        currHighLightColor = null;
+        highlightOn = false;
+        highlightTimes = 0;
+        for (BoggleButton b : squares) {
             b.clear();
+        }
 
     }
 
     /*
       highlighting words after enter is pressed
      */
-
     public void highlightWord(Color c) {
-        currHighLightColor=c;
-        highlightOn=true;
+        currHighLightColor = c;
+        highlightOn = true;
     }
-    private void initHighlightTimer(final int speed, final int pauseTm){
+
+    private void initHighlightTimer(final int speed, final int pauseTm) {
         t = new Timer(speed, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(highlightOn){
+                if (highlightOn) {
                     highlightTimes++;
-                    for(BoggleButton b:squares){
-                        if(b.isSelected()){
+                    for (BoggleButton b : squares) {
+                        if (b.isSelected()) {
                             b.setAsHighlighted(currHighLightColor);
                             b.setAsUnselected();
                             return;
                         }
                     }
-                    if(highlightTimes > pauseTm)
+                    if (highlightTimes > pauseTm) {
                         clear();
+                    }
                 }
             }
         });
         t.start();
     }
 
-
 }
-
-
-
