@@ -1,6 +1,7 @@
 package Model;
 
 import Controller.PuzzleObserver;
+import Model.BoggleDice.Die;
 
 import java.util.*;
 
@@ -8,33 +9,25 @@ import java.util.*;
  * Created by Dave on 01/06/2015.
  */
 public class Puzzle {
-    private Map<Integer,Square> ids;
     private Dictionary dic;
     private int rows,points,score;
     private PuzzleObserver obs;
-    private String currWord;
-    private Square lastSquarePressed;
+    private String currWordSelected;
+    private int lastSquarePressed;
     private Set<String> correctWords;
+    private BoggleDice dice;
 
     public Puzzle(Language lang,int rows, PuzzleObserver obs){
         this.rows = rows;
         this.obs = obs;
-        currWord="";
-        lastSquarePressed = null;
+        dice = new BoggleDice(false,lang,rows);
+        currWordSelected="";
+        lastSquarePressed = -1;
         dic = new Dictionary(lang);
         correctWords = new HashSet<String>(200);
-        ids = new HashMap<Integer, Square>(rows * rows);
-        initializeRows();
         points = score = 0;
     }
-    private void initializeRows(){
-        System.out.print("Creating puzzle...");
-        for(int id=0;id<rows*rows;id++){
-            Square sq = new Square(dic.getRandomLetter(),id);
-            ids.put(id,sq);
-        }
-        System.out.println("done");
-    }
+
     public void printPuzzle(){
         //todo: arabic is backwards
         for(int id=0;id<rows*rows;id++){
@@ -43,7 +36,7 @@ public class Puzzle {
                 System.out.println("------------------------");
                 System.out.print("| ");
             }
-            System.out.print(ids.get(id).getLetter() + " | ");
+            System.out.print(dice.currLetters()[id] + " | ");
         }
         System.out.println('\n' + "------------------------");
     }
@@ -53,11 +46,9 @@ public class Puzzle {
      * resets current word
      */
     public void resetMove(){
-        for(int i=0;i<rows * rows;i++){
-            ids.get(i).setState(SquareState.UNSELECTED);
-        }
-        currWord="";
-        lastSquarePressed=null;
+        dice.setAll(SquareState.UNSELECTED);
+        currWordSelected="";
+        lastSquarePressed=-1;
     }
     
     /**
@@ -65,8 +56,7 @@ public class Puzzle {
      */
     public void newPuzzle(){
         resetMove();
-        ids.clear();
-        initializeRows();
+        //todo
         
     }
     private boolean areTouching(int previous,int curr){
@@ -78,11 +68,12 @@ public class Puzzle {
         return previous + 1 == curr || previous - 1 == curr || previous == curr;
 
     }
-    private void legalSquareSelected(int id,Square s){
-        currWord += s.getLetter();
-        lastSquarePressed = s;
-        s.setState(SquareState.SELECTED);
-        obs.squarePushed(id,s.getLetter());
+    private void legalSquareSelected(int id){        
+        String letter = dice.currLetter(id);
+        currWordSelected += letter;
+        lastSquarePressed = id;
+        dice.setState(id,SquareState.SELECTED);
+        obs.squarePushed(id,letter);
     }
 
     /*
@@ -90,22 +81,22 @@ public class Puzzle {
      */
 
     public void squarePushed(int id){
-        Square s = ids.get(id);
-        if(s.getState()==SquareState.SELECTED) return; //alreaddy selected
-        if(lastSquarePressed==null){ //first push
+        Die selected = dice.die(id);
+        if(selected.state==SquareState.SELECTED) return; //alreaddy selected
+        if(lastSquarePressed==-1){ //first push
             obs.clear();
         }
         else {
-            if(!areTouching(lastSquarePressed.getId(),id)) return; //touching previous
+            if(!areTouching(lastSquarePressed,id)) return; //touching previous
         }
-        legalSquareSelected(id,s);
+        legalSquareSelected(id);
     }
 
     public void enterPushed(){
-        if(dic.isWord(currWord) && !correctWords.contains(currWord)){
-            correctWords.add(currWord);
-            points += determinePoints(currWord);
-            obs.correctWord(currWord,points);
+        if(dic.isWord(currWordSelected) && !correctWords.contains(currWordSelected)){
+            correctWords.add(currWordSelected);
+            points += determinePoints(currWordSelected);
+            obs.correctWord(currWordSelected,points);
         }
         else{ //not a word or already in correctWords
             obs.incorrectWord();
@@ -146,11 +137,7 @@ public class Puzzle {
         dic.setLang(l);
     }
     public String[] getPuzzle(){
-        String[] idList = new String[rows * rows];
-        for(int i=0;i<rows * rows;i++){
-            idList[i] = (ids.get(i)).getLetter();
-        }
-        return idList;
+        return dice.currLetters();
     }
     public int rows(){
         return rows;

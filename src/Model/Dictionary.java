@@ -10,7 +10,6 @@ import java.util.HashSet;
 public class Dictionary {
     private HashSet<String> dic;
     private Language lang;
-    private Alphabet gen;
 
     public Dictionary(Language lang){
         dic = new HashSet<>(500000);
@@ -19,7 +18,6 @@ public class Dictionary {
     
     public void setLang(Language lang){
         this.lang = lang;
-        gen = new Alphabet(lang);
         String filename = "/lib/Dictionaries/" + lang.toString() + "_Dictionary.txt"; 
         try{
             InputStream is = getClass().getResourceAsStream(filename);
@@ -52,9 +50,7 @@ public class Dictionary {
         returns 'random' letter based on boggle rules
         default is english, with 'boggle probability'
      */
-    public String getRandomLetter(){
-        return gen.getRandomLetter();
-    }
+
     
     public Language lang(){
         return lang;

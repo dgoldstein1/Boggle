@@ -74,13 +74,13 @@ public class BoggleFrame extends javax.swing.JFrame {
         contentPane.add(board, BorderLayout.CENTER);
         contentPane.add(controls, BorderLayout.EAST);
     }
-  
+
     public void clearBoard() {
         board.clear();
         wordEnteredField.setText("");
     }
-    
-    public void resetBoard(String[] ids){
+
+    public void resetBoard(String[] ids) {
         board.resetBoard(ids);
         clearBoard();
     }
@@ -92,7 +92,7 @@ public class BoggleFrame extends javax.swing.JFrame {
     public void squareSelected(int id, String s) {
         board.selectSquare(id);
         wordEnteredField.setText(wordEnteredField.getText() + s);
-                
+
     }
 
     public void correctWord(String s, int newPoints) {
@@ -225,7 +225,9 @@ public class BoggleFrame extends javax.swing.JFrame {
                 options,
                 notifier.getCurrLang().toString());
 
-        notifier.setLang(l);
+        if (l != null) {
+            notifier.setLang(l);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
