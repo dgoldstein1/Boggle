@@ -49,7 +49,7 @@ public class Game {
     }
     
     public void setLang(Language l){
-        p.setLang(l);
+        p.setLang(l);        
         newPuzzle();
     }
     public void newPuzzle(){

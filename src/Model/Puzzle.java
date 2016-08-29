@@ -1,7 +1,7 @@
 package Model;
 
 import Controller.PuzzleObserver;
-import Model.BoggleDice.Die;
+import Model.Dice.Die;
 
 import java.util.*;
 
@@ -15,12 +15,12 @@ public class Puzzle {
     private String currWordSelected;
     private int lastSquarePressed;
     private Set<String> correctWords;
-    private BoggleDice dice;
+    private Dice dice;
 
     public Puzzle(Language lang,int rows, PuzzleObserver obs){
         this.rows = rows;
         this.obs = obs;
-        dice = new BoggleDice(false,lang,rows);
+        dice = new Dice(false,lang,rows);
         currWordSelected="";
         lastSquarePressed = -1;
         dic = new Dictionary(lang);
@@ -56,7 +56,7 @@ public class Puzzle {
      */
     public void newPuzzle(){
         resetMove();
-        //todo
+        dice.shuffle();
         
     }
     private boolean areTouching(int previous,int curr){
@@ -111,7 +111,7 @@ public class Puzzle {
      */
     private int determinePoints(String s){
         int len = s.length();
-        if (len < 4) return 1;
+        if (len <= 4) return 1;
         switch(len){
             case(5):
                 return 2;
@@ -126,7 +126,7 @@ public class Puzzle {
     
     /*
      
-        getters and settesr
+        getters and setters
     */
 
     
@@ -135,6 +135,7 @@ public class Puzzle {
     }
     public void setLang(Language l){
         dic.setLang(l);
+        dice.setLang(l);
     }
     public String[] getPuzzle(){
         return dice.currLetters();

@@ -118,11 +118,13 @@ public class DieValues {
         };
     }
 
+    @SuppressWarnings("empty-statement")
     public String[] values(int id, Language l) {
-        if (id > 25){
+        if (id > 25) {
             System.out.println("id = " + id);
             System.exit(1);
         }
+        String[] alphabet = null;
 
         //existing boggle languages
         switch (l) {
@@ -131,22 +133,18 @@ public class DieValues {
             case SPANISH:
                 return spanish[id];
             case ITALIAN:
-                return italian[id];               
+                return italian[id];
             case FRENCH:
-                if (id > 16){
+                if (id > 16) {
                     System.out.println("only 4x4 supported in french");
                     System.exit(1);
                 }
                 return french[id];
 
-        }
-
-        //nonexisting boggle languages
-        String[] alphabet = null;
-        switch (l) {
+            //non existing boggle languages
             case ARABIC:
-                alphabet = new String[]{"ا", "ا", "ا", "ل", "ن", "م",
-                    "ي", "ي", "و", "و", "و", "ه", "ب", "ر", "ع", "ء", "ف", "ق", "د", "ت", "س", "ك", "ح", "ج", "خ", "ش", "ز", "ط", "ض", "ص", "غ", "ظ", "ح", "ح"};
+                alphabet = new String[]{"ا", "ا", "ا", "ل", "ن", "م", "ي", "ي", "و", "و", "و", "ه", "ب", "ر", "ع", "ء", "ف", "ق", "د", "ت", "س", "ك", "ح", "ج", "خ", "ش", "ز", "ط", "ض", "ص", "غ", "ظ", "ح", "ح"};
+                break;
             case AFRIKAANS:
                 alphabet = new String[]{"A", "B", "C", "D", "E", "F", "G",
                     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Qu", "R", "S",
@@ -180,15 +178,14 @@ public class DieValues {
                     "T", "U", "V", "X", "Y", "Z"
                 };
                 break;
-            case ITALIAN:
-                alphabet = new String[]{};
-                break;
+
             default:
-                break;
+                System.out.println("could not find language " + l);
+                System.exit(1);
         }
         String[] temp = new String[6];
         for (int i = 0; i < 6; i++) {
-            temp[i] = alphabet[(int) (Math.random() * 6)];
+            temp[i] = alphabet[(int) (Math.random() * alphabet.length)];
         };
         return temp;
 

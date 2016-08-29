@@ -10,7 +10,6 @@ import Model.Language;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
@@ -31,6 +30,9 @@ public class BoggleFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form BoggleFrameForm
+     * @param rows
+     * @param ids
+     * @param notifier
      */
     public BoggleFrame(int rows, String[] ids, GameNotifier notifier) {
         super("Boggle!");
@@ -63,6 +65,7 @@ public class BoggleFrame extends javax.swing.JFrame {
         sounds = new MainSound();
         initPanels(ids, rows);
 
+        this.setLocationRelativeTo(null);
         pack();
         setVisible(true);
 
@@ -105,7 +108,7 @@ public class BoggleFrame extends javax.swing.JFrame {
         board.highlightWord(Color.RED);
         wordEnteredField.setText("");
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -119,11 +122,10 @@ public class BoggleFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         wordEnteredField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        pointsField = new javax.swing.JTextField();
+        pointsField = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -135,11 +137,6 @@ public class BoggleFrame extends javax.swing.JFrame {
         jLabel2.setText("Points:");
 
         pointsField.setText("0");
-        pointsField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pointsFieldActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout currentWordPanelLayout = new javax.swing.GroupLayout(currentWordPanel);
         currentWordPanel.setLayout(currentWordPanelLayout);
@@ -152,7 +149,7 @@ public class BoggleFrame extends javax.swing.JFrame {
                 .addComponent(wordEnteredField, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pointsField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(102, Short.MAX_VALUE))
         );
@@ -163,27 +160,23 @@ public class BoggleFrame extends javax.swing.JFrame {
                 .addGroup(currentWordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(wordEnteredField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pointsField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(pointsField))
                 .addGap(1, 1, 1))
         );
 
         getContentPane().add(currentWordPanel, java.awt.BorderLayout.PAGE_END);
 
-        jMenu1.setText("File");
+        jMenu1.setText("Game");
 
         jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setText("New Puzzle");
+        jMenuItem2.setText("Shuffle");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem2ActionPerformed(evt);
             }
         });
         jMenu1.add(jMenuItem2);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setText("Game Mode");
@@ -192,9 +185,9 @@ public class BoggleFrame extends javax.swing.JFrame {
                 jMenuItem3ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem3);
+        jMenu1.add(jMenuItem3);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(jMenu1);
 
         jMenu3.setText("Language");
 
@@ -234,10 +227,6 @@ public class BoggleFrame extends javax.swing.JFrame {
         notifier.newPuzzle();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    private void pointsFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pointsFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_pointsFieldActionPerformed
-
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -248,13 +237,12 @@ public class BoggleFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JTextField pointsField;
+    private javax.swing.JLabel pointsField;
     private javax.swing.JTextField wordEnteredField;
     // End of variables declaration//GEN-END:variables
 }
