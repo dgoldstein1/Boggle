@@ -30,7 +30,7 @@ public class Dictionary {
     public void setLang(Language lang) {
 
         this.lang = lang;
-        this.filename = "/lib/Dictionaries/" + lang.toString() + "_Dictionary.txt";        
+        this.filename = "/lib/Dictionaries/" + lang.toString().toUpperCase() + "_Dictionary.txt";        
         reader = new FileReader();
 
     }
@@ -49,11 +49,12 @@ public class Dictionary {
     class FileReader {
 
         private FileReaderFrame frame;
+        private JProgressBar pb;
 
         public FileReader() {
             EventQueue.invokeLater(() -> {
                 frame = new FileReaderFrame(lang);
-                final JProgressBar pb = frame.getbar();
+                pb = frame.getbar();
                 final ReadFileWorker worker = new ReadFileWorker();
                 worker.addPropertyChangeListener((PropertyChangeEvent evt) -> {
                     if ("progress".equalsIgnoreCase(evt.getPropertyName())) {
@@ -70,10 +71,11 @@ public class Dictionary {
 
             @Override
             protected List<String> doInBackground() {
+                System.out.print("Reading " + filename + " ...");
                 try {
                     InputStream is = getClass().getResourceAsStream(filename);
                     BufferedReader br = new BufferedReader((new InputStreamReader(is, "UTF-8")));
-                    System.out.print("Reading " + filename + " ...");
+                    
 
                     int totalLines = 1;
                     while (br.readLine() != null) {
@@ -87,6 +89,7 @@ public class Dictionary {
                     while (word != null) {
                         word = br.readLine();
                         dic.add(word);
+                        pb.setString(word);
                         linesRead++;
                         setProgress(Math.round(((float) linesRead / totalLines) * 100f));
                         

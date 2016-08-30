@@ -6,7 +6,6 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -17,7 +16,7 @@ public class Dice {
 
     private boolean challengeMode;
     private Language lang;
-    private int rows;
+    public int rows;
     private ArrayList<Die> dice;
     private DieValues values;
 
@@ -64,6 +63,7 @@ public class Dice {
             dice.get(i).id = i; //reorder ids after shuffle
             dice.get(i).shuffle();
         }
+
     }
 
     public void setState(int id, SquareState ss) {
@@ -74,6 +74,92 @@ public class Dice {
         for (Die d : dice) {
             d.state = ss;
         }
+    }
+
+    /**
+     * selects (highlights) all combinations of s on board
+     * @param s
+     */
+    public void selectWord(String s) {
+        s = s.toLowerCase();
+        setAll(SquareState.UNSELECTED);
+        if (s == null || s.length() == 0) {
+            return;
+        }
+        for (Die d : diceContaining(s.charAt(0))) {
+            selectDiceHelper(1,s, d, null);
+        }
+
+    }
+
+    /**
+     * recusrive search for words, sets as selected
+     * @param index 
+     * @param s word entered
+     * @param current starting point
+     * @param path internal
+     */
+    private void selectDiceHelper(int index,String s, Die current, ArrayList<Die> path) {
+        if (path == null) {
+            path = new ArrayList<>(s.length());
+            index = 1;
+        }
+        path.add(current);
+        if (index == s.length()) {//word found (reached end)
+            for (Die d : path) {
+                d.state = SquareState.SELECTED;
+            }
+            return;
+        }
+        for (Die d : current.surroundingDice()) {            
+            if (d.equals(Character.toString(s.charAt(index))) && !path.contains(d)) {
+                selectDiceHelper(index+1, s, d, path);
+            }
+        }
+
+    }
+
+    /**
+     * gets all dice showing letter
+     * @param c
+     * @return 
+     */
+    private ArrayList<Die> diceContaining(char c) {
+        ArrayList<Die> temp = new ArrayList<>(25);
+        dice.stream().filter((d) -> (d.equals(c))).forEach((d) -> {
+            temp.add(d);
+        });
+        return temp;
+    }
+
+    /**
+     * are these two ids touching
+     *
+     * @param square1
+     * @param square2
+     * @return
+     */
+    private boolean areTouching(int square1, int square2) {
+        if (Math.abs(square1 - square2) > rows + 1 || square1 == square2) //not within one row
+        {
+            return false;
+        }
+
+        square1 %= rows;
+        square2 %= rows;
+        return square1 + 1 == square2 || square1 - 1 == square2 || square1 == square2;
+
+    }
+
+    /**
+     * @return list of selected squares
+     */
+    public ArrayList<Integer> highlightedSquares() {
+        ArrayList<Integer> toReturn = new ArrayList<>(25);
+        dice.stream().filter((d) -> (d.state.equals(SquareState.SELECTED))).forEach((d) -> {
+            toReturn.add(d.id);
+        });
+        return toReturn;
     }
 
     /**
@@ -94,6 +180,10 @@ public class Dice {
         }
 
         return toReturn;
+    }
+
+    public ArrayList<Die> currBoard() {
+        return dice;
     }
 
     public void setRows(int rows) {
@@ -130,6 +220,9 @@ public class Dice {
 
         Die(int id, String[] options) {
             this.id = id;
+            for (int i = 0; i < options.length; i++) {
+                options[i] = options[i].toLowerCase();
+            }
             this.options = options;
             this.currLetter = options[(int) (Math.random() * faces)];
             this.state = SquareState.UNSELECTED;
@@ -144,6 +237,34 @@ public class Dice {
 
         public void setOptions(String[] options) {
             this.options = options;
+        }
+
+        public boolean letterandSelection(char c) {
+            return state.equals(SquareState.SELECTED) && currLetter.equals(c);
+        }
+
+        /**
+         * gets list of surrounding dice
+         *
+         * @param id
+         * @param c
+         * @return
+         */
+        private ArrayList<Die> surroundingDice() {
+            ArrayList<Die> temp = new ArrayList<>(8);
+            dice.stream().filter((d) -> (areTouching(d.id, id))).forEach((d) -> {
+                temp.add(d);
+            });
+            return temp;
+
+        }
+
+        public boolean equals(String s) {
+            return s.equals(currLetter);
+        }
+
+        public boolean equals(char c) {
+            return currLetter.equals(Character.toString(c));
         }
 
     }

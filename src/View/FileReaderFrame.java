@@ -6,6 +6,8 @@
 package View;
 
 import Model.Language;
+import java.awt.Color;
+import java.awt.Cursor;
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 
@@ -21,6 +23,8 @@ public class FileReaderFrame extends javax.swing.JFrame {
      */
     public FileReaderFrame(Language l) {
         super("Loading Boggle:" + l);
+        UIManager.put("ProgressBar.foreground", Color.BLUE);
+
         try {
             for (UIManager.LookAndFeelInfo info
                     : UIManager.getInstalledLookAndFeels()) {
@@ -36,6 +40,7 @@ public class FileReaderFrame extends javax.swing.JFrame {
             e.printStackTrace();
         }
         
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         initComponents();
         this.setLocationRelativeTo(null);
         setVisible(true);
@@ -53,6 +58,7 @@ public class FileReaderFrame extends javax.swing.JFrame {
      * called when task is finished
      */
     public void finishAndDispose(){
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         this.setVisible(false);
         this.dispose();
     }
@@ -69,6 +75,9 @@ public class FileReaderFrame extends javax.swing.JFrame {
         jProgressBar1 = new javax.swing.JProgressBar(0,100);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jProgressBar1.setStringPainted(true);
+        jProgressBar1.setForeground(javax.swing.UIManager.getDefaults().getColor("Menu.selectionBackground"));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -115,6 +124,9 @@ public class FileReaderFrame extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(FileReaderFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

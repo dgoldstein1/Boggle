@@ -93,6 +93,6 @@ class WelcomeControls extends JPanel{
             new PopUpFrame("Iniput is not in valid range or you're entering something weird");
             e.printStackTrace();
         }
-        new Game(Language.SPANISH,rows);
+        new Game(Language.spanish,rows);
     }
 }

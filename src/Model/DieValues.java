@@ -128,13 +128,13 @@ public class DieValues {
 
         //existing boggle languages
         switch (l) {
-            case ENGLISH:
+            case english:
                 return english[id];
-            case SPANISH:
+            case spanish:
                 return spanish[id];
-            case ITALIAN:
+            case italian:
                 return italian[id];
-            case FRENCH:
+            case french:
                 if (id > 16) {
                     System.out.println("only 4x4 supported in french");
                     System.exit(1);
@@ -142,28 +142,28 @@ public class DieValues {
                 return french[id];
 
             //non existing boggle languages
-            case ARABIC:
+            case arabic:
                 alphabet = new String[]{"ا", "ا", "ا", "ل", "ن", "م", "ي", "ي", "و", "و", "و", "ه", "ب", "ر", "ع", "ء", "ف", "ق", "د", "ت", "س", "ك", "ح", "ج", "خ", "ش", "ز", "ط", "ض", "ص", "غ", "ظ", "ح", "ح"};
                 break;
-            case AFRIKAANS:
+            case afrikaans:
                 alphabet = new String[]{"A", "B", "C", "D", "E", "F", "G",
                     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Qu", "R", "S",
                     "T", "U", "V", "X", "Y", "Z", "É", "Ê", "Ò"
                 };
                 break;
-            case CROATIAN:
+            case croatian:
                 alphabet = new String[]{"A", "B", "C", "D", "E", "F", "G",
                     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Qu", "R", "S",
                     "T", "U", "V", "X", "Y", "Z", "Dž", "Č", "Ć", "Đ", "Lj", "Nj", "Š", "Ž", "Æ"
                 };
                 break;
-            case RUSSIAN:
+            case russian:
                 alphabet = new String[]{"А", "Б", "В", "Г", "Д", "Е", "Ж",
                     "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т",
                     "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ь", "Ю", "Я"
                 };
                 break;
-            case GERMAN:
+            case german:
                 alphabet = new String[]{
                     "Ä", "Ö", "Ü", "ß",
                     "A", "B", "C", "D", "E", "F", "G",
@@ -171,7 +171,7 @@ public class DieValues {
                     "T", "U", "V", "X", "Y", "Z"
                 };
                 break;
-            case LATIN:
+            case latin:
                 alphabet = new String[]{
                     "A", "B", "C", "D", "E", "F", "G",
                     "H", "I", "J", "K", "L", "M", "N", "O", "P", "Qu", "R", "S",

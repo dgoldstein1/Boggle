@@ -12,9 +12,14 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 /**
  *
@@ -25,11 +30,11 @@ public class BoggleFrame extends javax.swing.JFrame {
     private Container contentPane;
     private MainSound sounds;
     private BoardPanel board;
-    private BoggleControlPanel controls;
     private GameNotifier notifier;
 
     /**
      * Creates new form BoggleFrameForm
+     *
      * @param rows
      * @param ids
      * @param notifier
@@ -71,11 +76,13 @@ public class BoggleFrame extends javax.swing.JFrame {
 
     }
 
+    public void refreshIds(ArrayList<Integer> ids) {
+        board.highlightIds(ids, Color.YELLOW);
+    }
+
     private void initPanels(String[] ids, int rows) {
         board = new BoardPanel(ids, sounds, rows, notifier);
-        controls = new BoggleControlPanel(notifier);
         contentPane.add(board, BorderLayout.CENTER);
-        contentPane.add(controls, BorderLayout.EAST);
     }
 
     public void clearBoard() {
@@ -84,31 +91,32 @@ public class BoggleFrame extends javax.swing.JFrame {
     }
 
     public void resetBoard(String[] ids) {
-        board.resetBoard(ids);
+        board.resetBoardText(ids);
         clearBoard();
     }
 
-
-    /*
-        Update methods called by Notifier
-     */
-    public void squareSelected(int id, String s) {
-        board.selectSquare(id);
-        wordEnteredField.setText(wordEnteredField.getText() + s);
-
+    public void highlightIds(ArrayList<Integer> ids) {
+        board.highlightIds(ids, Color.YELLOW);
     }
 
     public void correctWord(String s, int newPoints) {
-        board.highlightWord(Color.GREEN);
+        board.highlightSelected(Color.GREEN);
         wordEnteredField.setText("");
         pointsField.setText(newPoints + "");
     }
 
     public void incorrectWord() {
-        board.highlightWord(Color.RED);
+        board.highlightSelected(Color.RED);
         wordEnteredField.setText("");
     }
-    
+
+    public String getTypedWord() {
+        return this.wordEnteredField.getText();
+    }
+    public void setTypedWord(String s){
+        wordEnteredField.setText(s);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,6 +141,17 @@ public class BoggleFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Word:");
+
+        wordEnteredField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                wordEnteredFieldActionPerformed(evt);
+            }
+        });
+        wordEnteredField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                wordEnteredFieldKeyReleased(evt);
+            }
+        });
 
         jLabel2.setText("Points:");
 
@@ -216,20 +235,34 @@ public class BoggleFrame extends javax.swing.JFrame {
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 options,
-                notifier.getCurrLang().toString());
+                notifier.getCurrLang().toString().toLowerCase());
 
         if (l != null) {
             notifier.setLang(l);
         }
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    //shuffle
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         notifier.newPuzzle();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    //game modes
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
+        //todo
     }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    //word entered
+    private void wordEnteredFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_wordEnteredFieldActionPerformed
+        notifier.enterPushed();
+
+    }//GEN-LAST:event_wordEnteredFieldActionPerformed
+
+    private void wordEnteredFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_wordEnteredFieldKeyReleased
+        notifier.wordFieldUpdated(wordEnteredField.getText());
+
+    }//GEN-LAST:event_wordEnteredFieldKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -245,4 +278,5 @@ public class BoggleFrame extends javax.swing.JFrame {
     private javax.swing.JLabel pointsField;
     private javax.swing.JTextField wordEnteredField;
     // End of variables declaration//GEN-END:variables
+
 }
