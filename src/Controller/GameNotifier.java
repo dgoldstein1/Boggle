@@ -20,9 +20,12 @@ public class GameNotifier extends MouseAdapter implements Controller.PuzzleObser
         notifier methods
      */
 
+    public int getPoints(String s){
+        return g.getPoints(s);
+    }
     
-    public void correctWord(String s,int newPoints){
-        g.correctWord(s,newPoints);
+    public void correctWord(String s,int newPoints,int nWords){
+        g.correctWord(s,newPoints,nWords);
     }
     public void incorrectWord(){
         g.incorrectWord();
@@ -30,14 +33,17 @@ public class GameNotifier extends MouseAdapter implements Controller.PuzzleObser
     public void clear(){
         g.clearPushed();
     }
+    public void endGame(){
+        g.endGame();
+    }
+    public void newGame(){
+        g.newGame();
+    }
     
     public void enterPushed(){
         g.enterPushed();
     }
     
-    public void newPuzzle(){
-        g.newPuzzle();
-    }
     
     public Language getCurrLang(){
         return g.getLang();

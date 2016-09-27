@@ -1,14 +1,11 @@
 package Model;
 
 import View.FileReaderFrame;
-import java.io.FileReader;
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.beans.PropertyChangeEvent;
 import java.io.*;
 import java.util.HashSet;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
@@ -21,17 +18,25 @@ public class Dictionary {
     private Language lang;
     private String filename;
     private FileReader reader;
+    private InputStream is;
+    private BufferedReader br;
 
-    public Dictionary(Language lang) {
-        dic = new HashSet<>(500000);
-        setLang(lang);
+    public Dictionary(Language lang,Dice dice) {
+        dic = new HashSet<>(100000000);
+        init(lang,dice);
     }
 
-    public void setLang(Language lang) {
-
+    
+    /**
+     * reads in target language
+     * if word is in dice, put it in dictionary
+     * @param lang
+     * @param dice 
+     */
+    public void init(Language lang, Dice dice) {
         this.lang = lang;
-        this.filename = "/lib/Dictionaries/" + lang.toString().toUpperCase() + "_Dictionary.txt";        
-        reader = new FileReader();
+        this.filename = "/lib/Dictionaries/" + lang.toString().toUpperCase() + "_Dictionary.txt";
+        reader = new FileReader(dice);
 
     }
 
@@ -39,8 +44,14 @@ public class Dictionary {
         return (dic.contains(s.toUpperCase()));
     }
 
-    public Language lang() {
-        return lang;
+ 
+
+    public int size() {
+        return dic.size();
+    }
+
+    public HashSet<String> getDic() {
+        return dic;
     }
 
     /**
@@ -50,8 +61,10 @@ public class Dictionary {
 
         private FileReaderFrame frame;
         private JProgressBar pb;
+        private Dice dice;
 
-        public FileReader() {
+        public FileReader(Dice dice) {
+            this.dice = dice;
             EventQueue.invokeLater(() -> {
                 frame = new FileReaderFrame(lang);
                 pb = frame.getbar();
@@ -75,24 +88,27 @@ public class Dictionary {
                 try {
                     InputStream is = getClass().getResourceAsStream(filename);
                     BufferedReader br = new BufferedReader((new InputStreamReader(is, "UTF-8")));
-                    
 
                     int totalLines = 1;
                     while (br.readLine() != null) {
                         totalLines++;
                     }
-                    
+
+                    if (dic != null) {
+                        dic.clear();
+                    }
+
                     is = getClass().getResourceAsStream(filename);
                     br = new BufferedReader((new InputStreamReader(is, "UTF-8")));
                     int linesRead = 0;
                     String word = "";
                     while (word != null) {
                         word = br.readLine();
-                        dic.add(word);
+                        if (dice.inPuzzle(word)) dic.add(word);
                         pb.setString(word);
                         linesRead++;
                         setProgress(Math.round(((float) linesRead / totalLines) * 100f));
-                        
+
                     }
                     is.close();
 

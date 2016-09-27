@@ -1,6 +1,7 @@
 package Model;
 
 import Controller.PuzzleObserver;
+import View.ResultsFrame;
 
 import java.util.*;
 
@@ -11,31 +12,21 @@ public class Puzzle {
 
     private Dictionary dic;
     private int points, score;
-    private PuzzleObserver obs;
+    private final PuzzleObserver obs;
     private String currWord;
-    private Set<String> correctWords;
-    private Dice dice;
+    private final Set<String> correctWords;
+    private final Dice dice;
+    private View.ResultsFrame frame;
+    private Language lang;
 
     public Puzzle(Language lang, int rows, PuzzleObserver obs) {
+        this.lang = lang;
         this.obs = obs;
         dice = new Dice(false, lang, rows);
         currWord = "";
-        dic = new Dictionary(lang);
-        correctWords = new HashSet<String>(200);
+        dic = new Dictionary(lang,dice);
+        correctWords = new HashSet<>(200);
         points = score = 0;
-    }
-
-    public void printPuzzle() {
-        //todo: arabic is backwards
-        for (int id = 0; id < dice.rows * dice.rows; id++) {
-            if (id % dice.rows == 0) {
-                System.out.println("");
-                System.out.println("------------------------");
-                System.out.print("| ");
-            }
-            System.out.print(dice.currLetters()[id] + " | ");
-        }
-        System.out.println('\n' + "------------------------");
     }
 
     /**
@@ -50,8 +41,10 @@ public class Puzzle {
      * resets board and makes new puzzle
      */
     public void newPuzzle() {
+        correctWords.clear();
         resetMove();
         dice.shuffle();
+        dic.init(this.lang,dice);
 
     }
 
@@ -59,7 +52,7 @@ public class Puzzle {
         if (dic.isWord(currWord) && !correctWords.contains(currWord)) {
             correctWords.add(currWord);
             points += determinePoints(currWord);
-            obs.correctWord(currWord, points);
+            obs.correctWord(currWord, points, correctWords.size());
         } else { //not a word or already in correctWords
             obs.incorrectWord();
         }
@@ -72,10 +65,20 @@ public class Puzzle {
      * @param s new word
      */
     public void wordFieldUpdated(String s) {
-        currWord = s;        
+        currWord = s;
         dice.selectWord(s);
+
+    }
+
+    /**
+     * ends game and displays results
+     */
+    public void endPuzzle() {
+        frame = new ResultsFrame(obs,correctWords, dic.getDic());
         
     }
+
+
     
 
     /**
@@ -84,7 +87,7 @@ public class Puzzle {
      * @param s
      * @return
      */
-    private int determinePoints(String s) {
+    public int determinePoints(String s) {
         int len = s.length();
         if (len <= 4) {
             return 1;
@@ -106,11 +109,11 @@ public class Puzzle {
         getters and setters
      */
     public Language getLang() {
-        return dic.lang();
+        return lang;
     }
 
     public void setLang(Language l) {
-        dic.setLang(l);
+        this.lang = l;
         dice.setLang(l);
     }
 
@@ -121,12 +124,23 @@ public class Puzzle {
     public int rows() {
         return dice.rows;
     }
-    
-    public ArrayList<Integer> higlightedIds(){
+
+    public ArrayList<Integer> higlightedIds() {
         return dice.highlightedSquares();
     }
-    public String currWord(){
+
+    public String currWord() {
         return currWord;
     }
+
+    public Set<String> correctWords() {
+        return correctWords;
+    }
+
+    public int points() {
+        return points;
+    }
+    
+ 
 
 }

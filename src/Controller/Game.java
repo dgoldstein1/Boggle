@@ -3,8 +3,6 @@ package Controller;
 import Model.Language;
 import Model.Puzzle;
 import View.BoggleFrame;
-import java.awt.event.ActionEvent;
-import javax.swing.Timer;
 
 /**
  * Created by Dave on 03/06/2015.
@@ -19,7 +17,7 @@ public class Game {
         gameNotifier = new GameNotifier(this);
         p = new Puzzle(lang, rows, gameNotifier);
         frame = new BoggleFrame(rows, p.getPuzzle(), gameNotifier);
-     
+
     }
 
     //in from view
@@ -32,13 +30,22 @@ public class Game {
         this.clearBoard();
     }
 
-    public void wordFieldUpdated(String s) {       
+    public void wordFieldUpdated(String s) {
         p.wordFieldUpdated(s);
         frame.setTypedWord(p.currWord());
-        frame.highlightIds(p.higlightedIds());        
+        frame.highlightIds(p.higlightedIds());
     }
-    
-    public void squarePushed(String s){
+
+    public void endGame() {
+        p.endPuzzle();
+    }
+
+    public void newGame() {
+        p.newPuzzle();
+        frame.resetBoard(p.getPuzzle());
+    }
+
+    public void squarePushed(String s) {
         wordFieldUpdated(p.currWord() + s);
     }
 
@@ -47,8 +54,8 @@ public class Game {
         frame.clearBoard();
     }
 
-    public void correctWord(String s, int newPoints) {
-        frame.correctWord(s, newPoints);
+    public void correctWord(String s, int newPoints, int nWords) {
+        frame.correctWord(s, newPoints, nWords);
     }
 
     public void incorrectWord() {
@@ -61,14 +68,12 @@ public class Game {
 
     public void setLang(Language l) {
         p.setLang(l);
-        newPuzzle();
+        newGame();
     }
 
-    public void newPuzzle() {
-        p.newPuzzle();
-        p.printPuzzle();
-        frame.resetBoard(p.getPuzzle());
 
+    public int getPoints(String s) {
+        return p.determinePoints(s);
     }
 
 }

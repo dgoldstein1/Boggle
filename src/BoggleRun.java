@@ -6,7 +6,7 @@ import Model.Language;
  */
 public class BoggleRun {
     public static void main(String[] args) {
-        new Game(Language.english,4);
+        new Game(Language.french,4);
         //new WelcomeFrame();
         
     }

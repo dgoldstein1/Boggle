@@ -22,7 +22,7 @@ public class FileReaderFrame extends javax.swing.JFrame {
      * @param l
      */
     public FileReaderFrame(Language l) {
-        super("Loading Boggle:" + l);
+        super("Loading Boggle (" + l + ")");
         UIManager.put("ProgressBar.foreground", Color.BLUE);
 
         try {
@@ -51,7 +51,7 @@ public class FileReaderFrame extends javax.swing.JFrame {
     }
 
     public JProgressBar getbar(){
-        return this.jProgressBar1;
+        return jProgressBar1;
     }
     
     /**

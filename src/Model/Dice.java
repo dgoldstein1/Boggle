@@ -6,6 +6,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -19,6 +20,7 @@ public class Dice {
     public int rows;
     private ArrayList<Die> dice;
     private DieValues values;
+    private ArrayList<String> wordsInPuzzle;
 
     public Dice(boolean challengeMode, Language lang, int rows) {
         this.challengeMode = challengeMode;
@@ -71,13 +73,66 @@ public class Dice {
     }
 
     public void setAll(SquareState ss) {
-        for (Die d : dice) {
+        for (Iterator<Die> it = dice.iterator(); it.hasNext();) {
+            Die d = it.next();
             d.state = ss;
         }
     }
 
     /**
+     * checks if s is in puzzle
+     *
+     * @param s
+     * @return
+     */
+    public boolean inPuzzle(String s) {
+        if (s == null || s.length() < 3) {
+            return false;
+        }
+        s = s.toLowerCase();
+
+        for (Die d : diceContaining(s.charAt(0))) {
+            if (inPuzzleHelper(1, s, d) == true) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    
+
+    /**
+     *
+     *
+     * /**
+     * recursive helper
+     *
+     * @param s
+     * @param index
+     * @param current
+     * @return found
+     */
+    private boolean inPuzzleHelper(int index, String s, Die current) {
+        if (index == s.length()) {
+            return true;
+        }
+
+        for (Die d : current.surroundingDice()) {
+            if (d.equals(Character.toString(s.charAt(index)))) {
+                if (inPuzzleHelper(index + 1, s, d) == true) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+    }
+
+    /**
      * selects (highlights) all combinations of s on board
+     *
      * @param s
      */
     public void selectWord(String s) {
@@ -87,19 +142,21 @@ public class Dice {
             return;
         }
         for (Die d : diceContaining(s.charAt(0))) {
-            selectDiceHelper(1,s, d, null);
+            selectDiceHelper(1, s, d, null);
         }
 
     }
 
     /**
-     * recusrive search for words, sets as selected
-     * @param index 
+     * recursive search for words, sets as selected
+     *
+     * @param index
      * @param s word entered
      * @param current starting point
      * @param path internal
+     * @param word found
      */
-    private void selectDiceHelper(int index,String s, Die current, ArrayList<Die> path) {
+    private boolean selectDiceHelper(int index, String s, Die current, ArrayList<Die> path) {
         if (path == null) {
             path = new ArrayList<>(s.length());
             index = 1;
@@ -109,20 +166,22 @@ public class Dice {
             for (Die d : path) {
                 d.state = SquareState.SELECTED;
             }
-            return;
+            return true;
         }
-        for (Die d : current.surroundingDice()) {            
+        for (Die d : current.surroundingDice()) {
             if (d.equals(Character.toString(s.charAt(index))) && !path.contains(d)) {
-                selectDiceHelper(index+1, s, d, path);
+                selectDiceHelper(index + 1, s, d, path);
             }
         }
+        return false;
 
     }
 
     /**
      * gets all dice showing letter
+     *
      * @param c
-     * @return 
+     * @return
      */
     private ArrayList<Die> diceContaining(char c) {
         ArrayList<Die> temp = new ArrayList<>(25);
@@ -182,9 +241,6 @@ public class Dice {
         return toReturn;
     }
 
-    public ArrayList<Die> currBoard() {
-        return dice;
-    }
 
     public void setRows(int rows) {
         //todo
@@ -192,6 +248,7 @@ public class Dice {
 
     public void setLang(Language l) {
         lang = l;
+        dice = null;
         updateDice();
     }
 
@@ -203,9 +260,6 @@ public class Dice {
         return dice.get(id).currLetter;
     }
 
-    public Die die(int id) {
-        return dice.get(id);
-    }
 
     /**
      * Die holding six letters specified by Alphabet

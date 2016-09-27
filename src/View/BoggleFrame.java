@@ -13,13 +13,9 @@ import java.awt.Container;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 /**
  *
@@ -76,6 +72,9 @@ public class BoggleFrame extends javax.swing.JFrame {
 
     }
 
+    /*
+    called by game
+     */
     public void refreshIds(ArrayList<Integer> ids) {
         board.highlightIds(ids, Color.YELLOW);
     }
@@ -88,6 +87,8 @@ public class BoggleFrame extends javax.swing.JFrame {
     public void clearBoard() {
         board.clear();
         wordEnteredField.setText("");
+        pointsField.setText("0");
+        numberOfWordsFields.setText("0");
     }
 
     public void resetBoard(String[] ids) {
@@ -99,10 +100,12 @@ public class BoggleFrame extends javax.swing.JFrame {
         board.highlightIds(ids, Color.YELLOW);
     }
 
-    public void correctWord(String s, int newPoints) {
+    public void correctWord(String s, int newPoints, int nWords) {
         board.highlightSelected(Color.GREEN);
         wordEnteredField.setText("");
         pointsField.setText(newPoints + "");
+        numberOfWordsFields.setText(nWords + "");
+
     }
 
     public void incorrectWord() {
@@ -110,10 +113,15 @@ public class BoggleFrame extends javax.swing.JFrame {
         wordEnteredField.setText("");
     }
 
+
+    /*
+    getters and setters
+     */
     public String getTypedWord() {
-        return this.wordEnteredField.getText();
+        return wordEnteredField.getText();
     }
-    public void setTypedWord(String s){
+
+    public void setTypedWord(String s) {
         wordEnteredField.setText(s);
     }
 
@@ -131,9 +139,12 @@ public class BoggleFrame extends javax.swing.JFrame {
         wordEnteredField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         pointsField = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        numberOfWordsFields = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -157,6 +168,10 @@ public class BoggleFrame extends javax.swing.JFrame {
 
         pointsField.setText("0");
 
+        jLabel3.setText("Words:");
+
+        numberOfWordsFields.setText("0");
+
         javax.swing.GroupLayout currentWordPanelLayout = new javax.swing.GroupLayout(currentWordPanel);
         currentWordPanel.setLayout(currentWordPanelLayout);
         currentWordPanelLayout.setHorizontalGroup(
@@ -170,7 +185,11 @@ public class BoggleFrame extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pointsField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(numberOfWordsFields)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         currentWordPanelLayout.setVerticalGroup(
             currentWordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -180,7 +199,9 @@ public class BoggleFrame extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(wordEnteredField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(pointsField))
+                    .addComponent(pointsField)
+                    .addComponent(jLabel3)
+                    .addComponent(numberOfWordsFields))
                 .addGap(1, 1, 1))
         );
 
@@ -196,6 +217,15 @@ public class BoggleFrame extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem2);
+
+        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem4.setText("End Game");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setText("Game Mode");
@@ -245,7 +275,7 @@ public class BoggleFrame extends javax.swing.JFrame {
 
     //shuffle
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        notifier.newPuzzle();
+        notifier.newGame();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     //game modes
@@ -264,17 +294,25 @@ public class BoggleFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_wordEnteredFieldKeyReleased
 
+    //end game
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        notifier.endGame();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel currentWordPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JLabel numberOfWordsFields;
     private javax.swing.JLabel pointsField;
     private javax.swing.JTextField wordEnteredField;
     // End of variables declaration//GEN-END:variables

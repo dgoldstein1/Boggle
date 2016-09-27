@@ -7,7 +7,7 @@ package Model;
 
 /**
  *
- * @author dave specified values for Die
+ * @author dave specified values for Die each row is a different die
  */
 public class DieValues {
 
@@ -118,9 +118,17 @@ public class DieValues {
         };
     }
 
+    /**
+     * returns specified values for each die, according to index
+     * if not english, spanish, italian, or french, returns random letters
+     *
+     * @param id
+     * @param l
+     * @return
+     */
     @SuppressWarnings("empty-statement")
     public String[] values(int id, Language l) {
-        if (id > 25) {
+        if (id > 25 || id < 0) {
             System.out.println("id = " + id);
             System.exit(1);
         }
